@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Collections Python — Cours Complet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0e0e12;
+  --bg2: #16161d;
+  --bg3: #1e1e28;
+  --border: rgba(255,255,255,0.07);
+  --accent: #7c6af7;
+  --accent2: #f25c7a;
+  --accent3: #3ecfb2;
+  --accent4: #f0a04b;
+  --text: #e8e6f0;
+  --muted: #7c7a8e;
+  --list-c: #a78bfa;
+  --tuple-c: #fb7185;
+  --dict-c: #60a5fa;
+  --set-c: #34d399;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-weight:300;
+  line-height:1.75;
+  font-size:15px;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(14,14,18,0.9);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:0;
+  padding:0 2rem;
+  height:54px;
+  overflow-x:auto;
+}
+nav a{
+  color:var(--muted);text-decoration:none;
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  padding:0 14px;height:54px;display:flex;align-items:center;
+  border-bottom:2px solid transparent;
+  white-space:nowrap;transition:all .2s;
+}
+nav a:hover{color:var(--text)}
+nav a.active{color:var(--accent);border-color:var(--accent)}
+.nav-logo{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:14px;
+  color:var(--text);margin-right:1.5rem;white-space:nowrap;
+  letter-spacing:-0.03em;
+}
+.nav-logo span{color:var(--accent)}
+
+/* HERO */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding:6rem 2rem 4rem;
+  max-width:860px;margin:0 auto;
+  position:relative;
+}
+.hero::before{
+  content:'';position:absolute;
+  top:20%;left:-10%;width:500px;height:500px;
+  background:radial-gradient(circle, rgba(124,106,247,0.12) 0%, transparent 70%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  color:var(--accent);letter-spacing:.15em;text-transform:uppercase;
+  margin-bottom:1.5rem;display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::before{content:'';width:32px;height:1px;background:var(--accent)}
+h1{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(2.8rem,6vw,5rem);
+  line-height:1.05;letter-spacing:-0.04em;
+  margin-bottom:1.5rem;
+}
+h1 .hl{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-desc{
+  font-size:1.05rem;color:var(--muted);max-width:540px;
+  line-height:1.8;margin-bottom:2.5rem;font-weight:300;
+}
+.toc{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:10px;margin-top:1rem;
+}
+.toc-item{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+  text-decoration:none;color:var(--text);
+  transition:all .2s;position:relative;overflow:hidden;
+}
+.toc-item::before{
+  content:'';position:absolute;bottom:0;left:0;right:0;
+  height:2px;background:var(--c,var(--accent));
+  transform:scaleX(0);transform-origin:left;transition:transform .2s;
+}
+.toc-item:hover{background:var(--bg3);transform:translateY(-2px)}
+.toc-item:hover::before{transform:scaleX(1)}
+.toc-num{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  color:var(--muted);margin-bottom:5px;
+}
+.toc-label{font-family:'Syne',sans-serif;font-size:14px;font-weight:700}
+.toc-sub{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* SECTIONS */
+.chapter{
+  max-width:860px;margin:0 auto;
+  padding:5rem 2rem;
+  border-top:1px solid var(--border);
+}
+.chapter-header{
+  display:flex;align-items:center;gap:16px;margin-bottom:3rem;
+}
+.chapter-num{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;
+  color:var(--muted);letter-spacing:.1em;
+}
+.chapter-badge{
+  font-family:'IBM Plex Mono',monospace;font-size:13px;
+  font-weight:600;padding:6px 16px;border-radius:100px;
+  background:var(--cbg,rgba(124,106,247,.15));
+  color:var(--cc,var(--accent));
+  border:1px solid var(--cc,var(--accent));
+}
+h2{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(1.8rem,4vw,2.6rem);
+  letter-spacing:-0.04em;line-height:1.1;
+  margin-bottom:1rem;
+}
+h3{
+  font-family:'Syne',sans-serif;font-weight:700;
+  font-size:1.15rem;letter-spacing:-0.02em;
+  margin:2rem 0 .75rem;color:var(--text);
+}
+p{color:var(--muted);margin-bottom:1rem;line-height:1.8;font-weight:300}
+strong{color:var(--text);font-weight:500}
+
+/* CODE BLOCKS */
+pre{
+  background:var(--bg2);
+  border:1px solid var(--border);
+  border-left:3px solid var(--cc,var(--accent));
+  border-radius:0 10px 10px 0;
+  padding:1.25rem 1.5rem;
+  font-family:'IBM Plex Mono',monospace;
+  font-size:12.5px;line-height:1.8;
+  overflow-x:auto;margin:1rem 0 1.5rem;
+  color:#c9c7e0;
+}
+.kw{color:#a78bfa}
+.fn{color:#34d399}
+.st{color:#fb7185}
+.cm{color:#4a4869;font-style:italic}
+.num{color:#60a5fa}
+.var{color:#f0a04b}
+.op{color:#7c7a8e}
+
+/* CALLOUT */
+.callout{
+  border-radius:10px;padding:1rem 1.25rem;
+  margin:1.5rem 0;display:flex;gap:12px;align-items:flex-start;
+}
+.callout-tip{background:rgba(124,106,247,.08);border:1px solid rgba(124,106,247,.25)}
+.callout-warn{background:rgba(240,160,75,.08);border:1px solid rgba(240,160,75,.25)}
+.callout-info{background:rgba(62,207,178,.08);border:1px solid rgba(62,207,178,.25)}
+.callout-icon{font-size:16px;margin-top:2px;flex-shrink:0}
+.callout p{margin:0;color:var(--text);font-size:13px;line-height:1.7}
+
+/* METHODS TABLE */
+.method-table{width:100%;border-collapse:collapse;margin:1rem 0 1.5rem;font-size:13px}
+.method-table th{
+  background:var(--bg2);padding:10px 14px;
+  text-align:left;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;
+  letter-spacing:.05em;color:var(--muted);text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+}
+.method-table td{
+  padding:9px 14px;border-bottom:1px solid var(--border);
+  vertical-align:top;color:var(--muted);
+}
+.method-table td:first-child{
+  font-family:'IBM Plex Mono',monospace;font-size:12px;
+  color:var(--cc,var(--accent));white-space:nowrap;
+}
+.method-table tr:hover td{background:rgba(255,255,255,.02)}
+
+/* SUMMARY TABLE */
+.compare-table{width:100%;border-collapse:collapse;font-size:13px;margin:1.5rem 0}
+.compare-table th,.compare-table td{padding:10px 14px;border:1px solid var(--border);text-align:center}
+.compare-table th{background:var(--bg2);font-family:'Syne',sans-serif;font-weight:700;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.compare-table td:first-child{text-align:left;color:var(--text);font-weight:400}
+.yes{color:#34d399}.no{color:#fb7185}
+
+/* EXERCISE */
+.exercise{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:12px;padding:1.5rem;margin:2rem 0;
+}
+.exercise-label{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--accent4);
+  margin-bottom:.5rem;
+}
+.exercise h4{font-family:'Syne',sans-serif;font-weight:700;font-size:15px;margin-bottom:.5rem}
+.exercise p{font-size:13px;margin-bottom:.75rem}
+details summary{cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--accent);padding:.5rem 0}
+details[open] summary{margin-bottom:.5rem}
+
+/* PROGRESS */
+.progress-bar{
+  position:fixed;top:0;left:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  z-index:200;transition:width .1s;
+  width:0%;
+}
+
+/* FOOTER */
+footer{
+  max-width:860px;margin:0 auto;padding:3rem 2rem 4rem;
+  border-top:1px solid var(--border);
+  display:flex;flex-direction:column;gap:12px;
+}
+.footer-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.next-steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:1rem}
+.next-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:10px;padding:14px;
+}
+.next-card .title{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:4px}
+.next-card .sub{font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progress"></div>
+
+<nav>
+  <span class="nav-logo">py<span>.collections</span></span>
+  <a href="#intro" class="active">Intro</a>
+  <a href="#liste">Liste</a>
+  <a href="#tuple">Tuple</a>
+  <a href="#dict">Dictionnaire</a>
+  <a href="#set">Ensemble</a>
+  <a href="#avance">Avancé</a>
+  <a href="#exercices">Exercices</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="intro">
+  <div class="hero-eyebrow">Python pour le Data Analyst</div>
+  <h1>Les <span class="hl">Collections</span><br>en Python</h1>
+  <p class="hero-desc">
+    Maîtrisez les 4 structures de données fondamentales : listes, tuples, dictionnaires et ensembles. Avec leurs méthodes, leurs cas d'usage et des exercices pratiques orientés data.
+  </p>
+  <div class="toc">
+    <a href="#liste" class="toc-item" style="--c:var(--list-c)">
+      <div class="toc-num">01</div>
+      <div class="toc-label">Liste</div>
+      <div class="toc-sub">Séquence mutable</div>
+    </a>
+    <a href="#tuple" class="toc-item" style="--c:var(--tuple-c)">
+      <div class="toc-num">02</div>
+      <div class="toc-label">Tuple</div>
+      <div class="toc-sub">Séquence immuable</div>
+    </a>
+    <a href="#dict" class="toc-item" style="--c:var(--dict-c)">
+      <div class="toc-num">03</div>
+      <div class="toc-label">Dictionnaire</div>
+      <div class="toc-sub">Clé → Valeur</div>
+    </a>
+    <a href="#set" class="toc-item" style="--c:var(--set-c)">
+      <div class="toc-num">04</div>
+      <div class="toc-label">Ensemble</div>
+      <div class="toc-sub">Valeurs uniques</div>
+    </a>
+    <a href="#avance" class="toc-item" style="--c:var(--accent4)">
+      <div class="toc-num">05</div>
+      <div class="toc-label">Avancé</div>
+      <div class="toc-sub">Patterns & astuces</div>
+    </a>
+    <a href="#exercices" class="toc-item" style="--c:var(--accent2)">
+      <div class="toc-num">06</div>
+      <div class="toc-label">Exercices</div>
+      <div class="toc-sub">Pratiquer</div>
+    </a>
+  </div>
+</section>
+
+<!-- LISTE -->
+<section class="chapter" id="liste" style="--cc:var(--list-c);--cbg:rgba(167,139,250,.12)">
+  <div class="chapter-header">
+    <span class="chapter-num">01 —</span>
+    <span class="chapter-badge">list [ ]</span>
+  </div>
+  <h2>La Liste</h2>
+  <p>La liste est la collection la plus utilisée en Python. Elle stocke une <strong>séquence ordonnée d'éléments</strong>, qui peuvent être de types différents. Elle est <strong>mutable</strong> : on peut la modifier après sa création.</p>
+
+  <h3>Création et accès</h3>
+  <pre><span class="cm"># Création</span>
+<span class="var">fruits</span> = [<span class="st">"pomme"</span>, <span class="st">"banane"</span>, <span class="st">"cerise"</span>, <span class="st">"mangue"</span>]
+<span class="var">notes</span>  = [<span class="num">12</span>, <span class="num">15.5</span>, <span class="num">9</span>, <span class="num">18</span>, <span class="num">14</span>]
+<span class="var">mixte</span>  = [<span class="st">"Alice"</span>, <span class="num">25</span>, <span class="kw">True</span>, <span class="num">3.14</span>]   <span class="cm"># types mixtes OK</span>
+<span class="var">vide</span>   = []                          <span class="cm"># liste vide</span>
+
+<span class="cm"># Accès par index (commence à 0)</span>
+<span class="fn">print</span>(fruits[<span class="num">0</span>])      <span class="cm"># "pomme"   — premier</span>
+<span class="fn">print</span>(fruits[<span class="num">2</span>])      <span class="cm"># "cerise"</span>
+<span class="fn">print</span>(fruits[-<span class="num">1</span>])     <span class="cm"># "mangue"  — dernier</span>
+<span class="fn">print</span>(fruits[-<span class="num">2</span>])     <span class="cm"># "cerise"  — avant-dernier</span>
+
+<span class="cm"># Slicing [début:fin:pas]  (fin exclus)</span>
+<span class="fn">print</span>(fruits[<span class="num">1</span>:<span class="num">3</span>])    <span class="cm"># ["banane","cerise"]</span>
+<span class="fn">print</span>(fruits[:<span class="num">2</span>])     <span class="cm"># ["pomme","banane"]</span>
+<span class="fn">print</span>(fruits[<span class="num">2</span>:])     <span class="cm"># ["cerise","mangue"]</span>
+<span class="fn">print</span>(fruits[::<span class="num">2</span>])    <span class="cm"># ["pomme","cerise"]   — 1 sur 2</span>
+<span class="fn">print</span>(fruits[::-<span class="num">1</span>])   <span class="cm"># inversée</span></pre>
+
+  <h3>Méthodes de modification</h3>
+  <table class="method-table">
+    <tr><th>Méthode</th><th>Description</th><th>Exemple</th></tr>
+    <tr><td>append(x)</td><td>Ajoute x à la fin</td><td><code>fruits.append("kiwi")</code></td></tr>
+    <tr><td>insert(i, x)</td><td>Insère x à l'index i</td><td><code>fruits.insert(1, "kiwi")</code></td></tr>
+    <tr><td>extend(lst)</td><td>Fusionne une autre liste</td><td><code>fruits.extend(["kiwi","ananas"])</code></td></tr>
+    <tr><td>remove(x)</td><td>Supprime la 1ère occurrence de x</td><td><code>fruits.remove("banane")</code></td></tr>
+    <tr><td>pop(i)</td><td>Retire et retourne l'élément à l'index i (défaut : dernier)</td><td><code>dernier = fruits.pop()</code></td></tr>
+    <tr><td>del lst[i]</td><td>Supprime l'élément à l'index i</td><td><code>del fruits[0]</code></td></tr>
+    <tr><td>clear()</td><td>Vide la liste</td><td><code>fruits.clear()</code></td></tr>
+  </table>
+
+  <h3>Méthodes de recherche et tri</h3>
+  <table class="method-table">
+    <tr><th>Méthode</th><th>Description</th><th>Exemple</th></tr>
+    <tr><td>index(x)</td><td>Retourne l'index de la 1ère occurrence de x</td><td><code>fruits.index("cerise")  # 2</code></td></tr>
+    <tr><td>count(x)</td><td>Nombre d'occurrences de x</td><td><code>notes.count(15)  # 0</code></td></tr>
+    <tr><td>sort()</td><td>Trie la liste sur place (modifie)</td><td><code>notes.sort()</code></td></tr>
+    <tr><td>sort(reverse=True)</td><td>Tri décroissant</td><td><code>notes.sort(reverse=True)</code></td></tr>
+    <tr><td>sorted(lst)</td><td>Retourne une copie triée (ne modifie pas)</td><td><code>triee = sorted(notes)</code></td></tr>
+    <tr><td>reverse()</td><td>Inverse la liste sur place</td><td><code>notes.reverse()</code></td></tr>
+    <tr><td>copy()</td><td>Copie superficielle</td><td><code>copie = fruits.copy()</code></td></tr>
+    <tr><td>len(lst)</td><td>Longueur (fonction built-in)</td><td><code>len(fruits)  # 4</code></td></tr>
+  </table>
+
+  <h3>Itération et compréhensions de liste</h3>
+  <pre><span class="cm"># Boucle simple</span>
+<span class="kw">for</span> fruit <span class="kw">in</span> fruits:
+    <span class="fn">print</span>(fruit)
+
+<span class="cm"># Avec index : enumerate()</span>
+<span class="kw">for</span> i, fruit <span class="kw">in</span> <span class="fn">enumerate</span>(fruits):
+    <span class="fn">print</span>(f<span class="st">"{i}: {fruit}"</span>)
+
+<span class="cm"># List comprehension — syntaxe puissante !</span>
+<span class="var">carres</span>    = [x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">10</span>)]
+<span class="var">pairs</span>     = [x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">20</span>) <span class="kw">if</span> x % <span class="num">2</span> <span class="op">==</span> <span class="num">0</span>]
+<span class="var">majuscule</span> = [f.upper() <span class="kw">for</span> f <span class="kw">in</span> fruits]
+<span class="var">admis</span>     = [n <span class="kw">for</span> n <span class="kw">in</span> notes <span class="kw">if</span> n >= <span class="num">10</span>]
+
+<span class="cm"># Fonctions utiles sur les listes numériques</span>
+<span class="fn">print</span>(<span class="fn">sum</span>(notes))    <span class="cm"># total</span>
+<span class="fn">print</span>(<span class="fn">min</span>(notes))    <span class="cm"># minimum</span>
+<span class="fn">print</span>(<span class="fn">max</span>(notes))    <span class="cm"># maximum</span>
+moyenne <span class="op">=</span> <span class="fn">sum</span>(notes) / <span class="fn">len</span>(notes)</pre>
+
+  <div class="callout callout-warn">
+    <span class="callout-icon">⚠️</span>
+    <p><strong>Attention aux copies !</strong> <code>b = a</code> ne copie pas la liste, elle crée un alias. Modifier <code>b</code> modifie aussi <code>a</code>. Utilisez <code>b = a.copy()</code> ou <code>b = a[:]</code> pour une vraie copie.</p>
+  </div>
+</section>
+
+<!-- TUPLE -->
+<section class="chapter" id="tuple" style="--cc:var(--tuple-c);--cbg:rgba(251,113,133,.12)">
+  <div class="chapter-header">
+    <span class="chapter-num">02 —</span>
+    <span class="chapter-badge">tuple ( )</span>
+  </div>
+  <h2>Le Tuple</h2>
+  <p>Le tuple est une séquence <strong>ordonnée et immuable</strong>. Contrairement à la liste, on ne peut pas modifier ses éléments après création. Cette propriété le rend plus sûr et légèrement plus performant que la liste.</p>
+
+  <h3>Création et accès</h3>
+  <pre><span class="cm"># Création</span>
+<span class="var">point</span>    = (<span class="num">10.5</span>, <span class="num">20.3</span>)
+<span class="var">couleur</span>  = (<span class="num">255</span>, <span class="num">128</span>, <span class="num">0</span>)       <span class="cm"># RGB orange</span>
+<span class="var">personne</span> = (<span class="st">"Alice"</span>, <span class="num">28</span>, <span class="st">"Paris"</span>)
+<span class="var">single</span>   = (<span class="num">42</span>,)                <span class="cm"># ⚠ virgule obligatoire !</span>
+<span class="var">sans_par</span> = <span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>             <span class="cm"># tuple implicite</span>
+
+<span class="cm"># Accès identique aux listes</span>
+<span class="fn">print</span>(point[<span class="num">0</span>])       <span class="cm"># 10.5</span>
+<span class="fn">print</span>(couleur[-<span class="num">1</span>])    <span class="cm"># 0</span>
+
+<span class="cm"># Tentative de modification → TypeError !</span>
+<span class="cm"># point[0] = 5    ← interdit</span></pre>
+
+  <h3>Unpacking — fonctionnalité clé</h3>
+  <pre><span class="cm"># Dépackaging simple</span>
+x, y = point                      <span class="cm"># x=10.5, y=20.3</span>
+nom, age, ville = personne
+
+<span class="cm"># Échange de variables (élégant !)</span>
+a, b = <span class="num">10</span>, <span class="num">20</span>
+a, b = b, a                       <span class="cm"># swap sans variable temporaire</span>
+
+<span class="cm"># Unpacking étendu avec *</span>
+premier, *reste = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+<span class="cm"># premier=1, reste=[2,3,4,5]</span>
+
+*debut, dernier = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>]
+<span class="cm"># debut=[1,2,3,4], dernier=5</span>
+
+<span class="cm"># Retourner plusieurs valeurs d'une fonction</span>
+<span class="kw">def</span> <span class="fn">stats</span>(data):
+    <span class="kw">return</span> <span class="fn">min</span>(data), <span class="fn">max</span>(data), <span class="fn">sum</span>(data) / <span class="fn">len</span>(data)
+
+<span class="var">mini</span>, <span class="var">maxi</span>, <span class="var">moy</span> = <span class="fn">stats</span>([<span class="num">3</span>, <span class="num">1</span>, <span class="num">4</span>, <span class="num">1</span>, <span class="num">5</span>, <span class="num">9</span>])</pre>
+
+  <h3>Méthodes disponibles</h3>
+  <p>Le tuple n'ayant que 2 méthodes (immuabilité oblige) :</p>
+  <table class="method-table">
+    <tr><th>Méthode</th><th>Description</th><th>Exemple</th></tr>
+    <tr><td>count(x)</td><td>Nombre d'occurrences de x</td><td><code>(1,2,1,3).count(1)  # 2</code></td></tr>
+    <tr><td>index(x)</td><td>Index de la 1ère occurrence de x</td><td><code>(1,2,3).index(2)    # 1</code></td></tr>
+  </table>
+
+  <div class="callout callout-info">
+    <span class="callout-icon">💡</span>
+    <p>En data analyse, les tuples sont utilisés comme <strong>noms de colonnes multi-niveaux dans pandas</strong> (<code>MultiIndex</code>), comme clés de dictionnaire (ils sont hashables, contrairement aux listes), et pour les <strong>coordonnées géographiques</strong>.</p>
+  </div>
+
+  <h3>Conversion</h3>
+  <pre><span class="var">t</span> = <span class="fn">tuple</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>])   <span class="cm"># liste  → tuple</span>
+<span class="var">l</span> = <span class="fn">list</span>((<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>))    <span class="cm"># tuple  → liste</span>
+<span class="var">t</span> = <span class="fn">tuple</span>(<span class="st">"hello"</span>)     <span class="cm"># string → tuple : ('h','e','l','l','o')</span></pre>
+</section>
+
+<!-- DICT -->
+<section class="chapter" id="dict" style="--cc:var(--dict-c);--cbg:rgba(96,165,250,.12)">
+  <div class="chapter-header">
+    <span class="chapter-num">03 —</span>
+    <span class="chapter-badge">dict { }</span>
+  </div>
+  <h2>Le Dictionnaire</h2>
+  <p>Le dictionnaire associe des <strong>clés uniques</strong> à des valeurs. C'est la structure la plus proche du JSON, idéale pour modéliser des enregistrements structurés. Depuis Python 3.7, l'ordre d'insertion est garanti.</p>
+
+  <h3>Création et accès</h3>
+  <pre><span class="cm"># Création</span>
+<span class="var">client</span> = {
+    <span class="st">"nom"</span>:    <span class="st">"Dupont"</span>,
+    <span class="st">"prenom"</span>: <span class="st">"Marie"</span>,
+    <span class="st">"age"</span>:    <span class="num">34</span>,
+    <span class="st">"actif"</span>:  <span class="kw">True</span>
+}
+
+<span class="cm"># Depuis deux listes avec zip()</span>
+<span class="var">cles</span>    = [<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>]
+<span class="var">valeurs</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]
+<span class="var">d</span>       = <span class="fn">dict</span>(<span class="fn">zip</span>(cles, valeurs))   <span class="cm"># {"a":1,"b":2,"c":3}</span>
+
+<span class="cm"># Accès aux valeurs</span>
+<span class="fn">print</span>(client[<span class="st">"nom"</span>])                  <span class="cm"># "Dupont"</span>
+<span class="fn">print</span>(client.get(<span class="st">"email"</span>))            <span class="cm"># None (pas d'erreur)</span>
+<span class="fn">print</span>(client.get(<span class="st">"email"</span>, <span class="st">"N/A"</span>))    <span class="cm"># "N/A" — valeur par défaut</span>
+
+<span class="cm"># Vérifier l'existence d'une clé</span>
+<span class="fn">print</span>(<span class="st">"age"</span> <span class="kw">in</span> client)               <span class="cm"># True</span></pre>
+
+  <h3>Méthodes principales</h3>
+  <table class="method-table">
+    <tr><th>Méthode</th><th>Description</th></tr>
+    <tr><td>get(k, défaut)</td><td>Retourne la valeur de k, ou défaut si absent (évite les KeyError)</td></tr>
+    <tr><td>keys()</td><td>Vue de toutes les clés (itérable)</td></tr>
+    <tr><td>values()</td><td>Vue de toutes les valeurs (itérable)</td></tr>
+    <tr><td>items()</td><td>Vue des paires (clé, valeur) — très utilisé en boucles</td></tr>
+    <tr><td>update(d2)</td><td>Fusionne d2 dans le dict (écrase les clés existantes)</td></tr>
+    <tr><td>pop(k, défaut)</td><td>Retire et retourne la valeur de k</td></tr>
+    <tr><td>setdefault(k, v)</td><td>Définit k=v seulement si k est absent, puis retourne la valeur</td></tr>
+    <tr><td>copy()</td><td>Copie superficielle</td></tr>
+    <tr><td>clear()</td><td>Vide le dictionnaire</td></tr>
+    <tr><td>dict.fromkeys(lst, v)</td><td>Crée un dict depuis une liste de clés, avec valeur v</td></tr>
+  </table>
+
+  <h3>Itération</h3>
+  <pre><span class="cm"># Itérer sur les clés (défaut)</span>
+<span class="kw">for</span> cle <span class="kw">in</span> client:
+    <span class="fn">print</span>(cle)
+
+<span class="cm"># Itérer sur les paires (le plus courant)</span>
+<span class="kw">for</span> cle, valeur <span class="kw">in</span> client.items():
+    <span class="fn">print</span>(f<span class="st">"{cle:10} : {valeur}"</span>)
+
+<span class="cm"># Itérer sur les valeurs</span>
+<span class="kw">for</span> v <span class="kw">in</span> client.values():
+    <span class="fn">print</span>(v)</pre>
+
+  <h3>Dict comprehension</h3>
+  <pre><span class="cm"># Syntaxe de base</span>
+<span class="var">carres</span> = {x: x**<span class="num">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="num">6</span>)}
+<span class="cm"># {0:0, 1:1, 2:4, 3:9, 4:16, 5:25}</span>
+
+<span class="cm"># Avec filtre</span>
+<span class="var">scores</span> = {<span class="st">"Alice"</span>: <span class="num">85</span>, <span class="st">"Bob"</span>: <span class="num">55</span>, <span class="st">"Clara"</span>: <span class="num">92</span>}
+<span class="var">admis</span>  = {nom: s <span class="kw">for</span> nom, s <span class="kw">in</span> scores.items() <span class="kw">if</span> s >= <span class="num">60</span>}
+<span class="cm"># {"Alice":85, "Clara":92}</span>
+
+<span class="cm"># Pattern data analyst : comptage de fréquences</span>
+<span class="var">data</span> = [<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"C"</span>, <span class="st">"B"</span>, <span class="st">"A"</span>, <span class="st">"B"</span>]
+<span class="var">freq</span> = {}
+<span class="kw">for</span> x <span class="kw">in</span> data:
+    freq[x] = freq.get(x, <span class="num">0</span>) + <span class="num">1</span>
+<span class="cm"># {"A":3, "B":3, "C":1}</span>
+
+<span class="cm"># Version one-liner avec collections.Counter</span>
+<span class="kw">from</span> collections <span class="kw">import</span> Counter
+<span class="var">freq</span> = <span class="fn">Counter</span>(data)   <span class="cm"># Counter({"A":3,"B":3,"C":1})</span></pre>
+
+  <div class="callout callout-tip">
+    <span class="callout-icon">✨</span>
+    <p><strong>Fusion de dicts (Python 3.9+)</strong> : utilisez l'opérateur <code>|</code> pour fusionner deux dicts de façon élégante : <code>d3 = d1 | d2</code>. Pour Python &lt; 3.9 : <code>d3 = {**d1, **d2}</code>.</p>
+  </div>
+</section>
+
+<!-- SET -->
+<section class="chapter" id="set" style="--cc:var(--set-c);--cbg:rgba(52,211,153,.12)">
+  <div class="chapter-header">
+    <span class="chapter-num">04 —</span>
+    <span class="chapter-badge">set { }</span>
+  </div>
+  <h2>L'Ensemble (Set)</h2>
+  <p>Un ensemble est une collection <strong>non ordonnée d'éléments uniques</strong>. Il est optimisé pour les tests d'appartenance (<code>in</code>) et les opérations ensemblistes (union, intersection, différence).</p>
+
+  <h3>Création</h3>
+  <pre><span class="cm"># Création directe</span>
+<span class="var">a</span> = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>}
+<span class="var">b</span> = {<span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>, <span class="num">7</span>}
+
+<span class="cm"># Depuis une liste — dédoublonnage instantané !</span>
+<span class="var">doublons</span> = [<span class="num">1</span>, <span class="num">2</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">3</span>, <span class="num">3</span>, <span class="num">4</span>]
+<span class="var">unique</span>   = <span class="fn">set</span>(doublons)    <span class="cm"># {1, 2, 3, 4}</span>
+
+<span class="cm"># ⚠ Important : le set vide s'écrit set(), pas {}</span>
+<span class="var">vide</span> = <span class="fn">set</span>()               <span class="cm"># {} crée un dict vide !</span></pre>
+
+  <h3>Méthodes de base</h3>
+  <table class="method-table">
+    <tr><th>Méthode</th><th>Description</th></tr>
+    <tr><td>add(x)</td><td>Ajoute l'élément x (ignoré si déjà présent)</td></tr>
+    <tr><td>remove(x)</td><td>Retire x — lève KeyError si absent</td></tr>
+    <tr><td>discard(x)</td><td>Retire x — silencieux si absent (préférable)</td></tr>
+    <tr><td>pop()</td><td>Retire et retourne un élément arbitraire</td></tr>
+    <tr><td>clear()</td><td>Vide l'ensemble</td></tr>
+    <tr><td>copy()</td><td>Copie de l'ensemble</td></tr>
+    <tr><td>len(s)</td><td>Nombre d'éléments</td></tr>
+  </table>
+
+  <h3>Opérations ensemblistes</h3>
+  <pre><span class="var">a</span> = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>, <span class="num">4</span>, <span class="num">5</span>}
+<span class="var">b</span> = {<span class="num">4</span>, <span class="num">5</span>, <span class="num">6</span>, <span class="num">7</span>}
+
+<span class="cm"># Union : tous les éléments</span>
+<span class="fn">print</span>(a | b)              <span class="cm"># {1,2,3,4,5,6,7}</span>
+<span class="fn">print</span>(a.union(b))
+
+<span class="cm"># Intersection : éléments communs</span>
+<span class="fn">print</span>(a & b)              <span class="cm"># {4,5}</span>
+<span class="fn">print</span>(a.intersection(b))
+
+<span class="cm"># Différence : dans a mais pas dans b</span>
+<span class="fn">print</span>(a - b)              <span class="cm"># {1,2,3}</span>
+<span class="fn">print</span>(a.difference(b))
+
+<span class="cm"># Différence symétrique : non communs</span>
+<span class="fn">print</span>(a ^ b)              <span class="cm"># {1,2,3,6,7}</span>
+<span class="fn">print</span>(a.symmetric_difference(b))
+
+<span class="cm"># Tests de relation</span>
+<span class="fn">print</span>({<span class="num">1</span>,<span class="num">2</span>}.issubset(a))   <span class="cm"># True  ({1,2} ⊆ a)</span>
+<span class="fn">print</span>(a.issuperset({<span class="num">1</span>,<span class="num">2</span>})) <span class="cm"># True  (a ⊇ {1,2})</span>
+<span class="fn">print</span>(a.isdisjoint(b))     <span class="cm"># False (a et b ont des communs)</span>
+
+<span class="cm"># Test d'appartenance — O(1), très rapide !</span>
+<span class="fn">print</span>(<span class="num">3</span> <span class="kw">in</span> a)             <span class="cm"># True</span></pre>
+
+  <h3>Cas d'usage data analyst</h3>
+  <pre><span class="cm"># Dédoublonnage de données</span>
+<span class="var">ids_bruts</span> = [<span class="num">101</span>, <span class="num">102</span>, <span class="num">101</span>, <span class="num">103</span>, <span class="num">102</span>, <span class="num">104</span>]
+<span class="var">ids_uniq</span>  = <span class="fn">list</span>(<span class="fn">set</span>(ids_bruts))   <span class="cm"># [101,102,103,104]</span>
+
+<span class="cm"># Analyse de clientèle</span>
+<span class="var">clients_jan</span> = {<span class="st">"Alice"</span>, <span class="st">"Bob"</span>, <span class="st">"Clara"</span>, <span class="st">"David"</span>}
+<span class="var">clients_fev</span> = {<span class="st">"Bob"</span>, <span class="st">"David"</span>, <span class="st">"Emma"</span>, <span class="st">"Frank"</span>}
+
+<span class="var">fidelises</span>  = clients_jan & clients_fev   <span class="cm"># {"Bob","David"}</span>
+<span class="var">perdus</span>     = clients_jan - clients_fev   <span class="cm"># {"Alice","Clara"}</span>
+<span class="var">nouveaux</span>   = clients_fev - clients_jan   <span class="cm"># {"Emma","Frank"}</span>
+<span class="var">tous</span>       = clients_jan | clients_fev   <span class="cm"># tous les clients</span>
+
+<span class="cm"># Vérification de colonnes requises dans un dataset</span>
+<span class="var">colonnes_requises</span> = {<span class="st">"id"</span>, <span class="st">"date"</span>, <span class="st">"montant"</span>, <span class="st">"client_id"</span>}
+<span class="var">colonnes_fichier</span>  = {<span class="st">"id"</span>, <span class="st">"date"</span>, <span class="st">"montant"</span>}
+<span class="var">manquantes</span>        = colonnes_requises - colonnes_fichier
+<span class="cm"># {"client_id"}</span></pre>
+</section>
+
+<!-- AVANCE -->
+<section class="chapter" id="avance" style="--cc:var(--accent4);--cbg:rgba(240,160,75,.1)">
+  <div class="chapter-header">
+    <span class="chapter-num">05 —</span>
+    <span class="chapter-badge">Avancé</span>
+  </div>
+  <h2>Patterns Avancés</h2>
+
+  <h3>Imbrication de collections</h3>
+  <pre><span class="cm"># Liste de dictionnaires — très courant !</span>
+<span class="var">employes</span> = [
+    {<span class="st">"nom"</span>: <span class="st">"Alice"</span>, <span class="st">"dept"</span>: <span class="st">"IT"</span>,      <span class="st">"salaire"</span>: <span class="num">45000</span>},
+    {<span class="st">"nom"</span>: <span class="st">"Bob"</span>,   <span class="st">"dept"</span>: <span class="st">"Finance"</span>, <span class="st">"salaire"</span>: <span class="num">52000</span>},
+    {<span class="st">"nom"</span>: <span class="st">"Clara"</span>, <span class="st">"dept"</span>: <span class="st">"IT"</span>,      <span class="st">"salaire"</span>: <span class="num">48000</span>},
+]
+
+<span class="cm"># Extraire tous les noms</span>
+<span class="var">noms</span>   = [e[<span class="st">"nom"</span>] <span class="kw">for</span> e <span class="kw">in</span> employes]
+
+<span class="cm"># Filtrer le département IT</span>
+<span class="var">eq_it</span>  = [e <span class="kw">for</span> e <span class="kw">in</span> employes <span class="kw">if</span> e[<span class="st">"dept"</span>] <span class="op">==</span> <span class="st">"IT"</span>]
+
+<span class="cm"># Trier par salaire décroissant</span>
+<span class="var">trie</span>   = <span class="fn">sorted</span>(employes, key=<span class="kw">lambda</span> e: e[<span class="st">"salaire"</span>], reverse=<span class="kw">True</span>)
+
+<span class="cm"># Salaire moyen IT</span>
+<span class="var">sal_it</span> = [e[<span class="st">"salaire"</span>] <span class="kw">for</span> e <span class="kw">in</span> employes <span class="kw">if</span> e[<span class="st">"dept"</span>] <span class="op">==</span> <span class="st">"IT"</span>]
+<span class="var">moy</span>    = <span class="fn">sum</span>(sal_it) / <span class="fn">len</span>(sal_it)   <span class="cm"># 46500.0</span></pre>
+
+  <h3>Le module collections</h3>
+  <pre><span class="kw">from</span> collections <span class="kw">import</span> Counter, defaultdict, OrderedDict, namedtuple
+
+<span class="cm"># Counter — compter des éléments</span>
+<span class="var">ventes</span>  = [<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"A"</span>,<span class="st">"C"</span>,<span class="st">"B"</span>,<span class="st">"A"</span>,<span class="st">"B"</span>,<span class="st">"B"</span>]
+<span class="var">c</span>       = <span class="fn">Counter</span>(ventes)
+<span class="fn">print</span>(c.most_common(<span class="num">2</span>))        <span class="cm"># [("B",4),("A",3)]</span>
+
+<span class="cm"># defaultdict — dict avec valeur par défaut</span>
+<span class="var">par_dept</span> = <span class="fn">defaultdict</span>(<span class="fn">list</span>)
+<span class="kw">for</span> e <span class="kw">in</span> employes:
+    par_dept[e[<span class="st">"dept"</span>]].append(e[<span class="st">"nom"</span>])
+<span class="cm"># {"IT":["Alice","Clara"], "Finance":["Bob"]}</span>
+
+<span class="cm"># namedtuple — tuple avec attributs nommés</span>
+<span class="var">Point</span> = <span class="fn">namedtuple</span>(<span class="st">"Point"</span>, [<span class="st">"x"</span>, <span class="st">"y"</span>])
+<span class="var">p</span>     = <span class="fn">Point</span>(<span class="num">10</span>, <span class="num">20</span>)
+<span class="fn">print</span>(p.x, p.y)                <span class="cm"># 10 20</span>
+<span class="fn">print</span>(p[<span class="num">0</span>], p[<span class="num">1</span>])              <span class="cm"># accès par index aussi</span></pre>
+
+  <h3>Tableau comparatif complet</h3>
+  <table class="compare-table">
+    <tr>
+      <th>Propriété</th>
+      <th style="color:var(--list-c)">Liste []</th>
+      <th style="color:var(--tuple-c)">Tuple ()</th>
+      <th style="color:var(--dict-c)">Dict {k:v}</th>
+      <th style="color:var(--set-c)">Set {}</th>
+    </tr>
+    <tr><td>Ordonnée</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓ (3.7+)</td><td class="no">✗</td></tr>
+    <tr><td>Mutable</td><td class="yes">✓</td><td class="no">✗</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+    <tr><td>Doublons</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗ (clés)</td><td class="no">✗</td></tr>
+    <tr><td>Accès indexé</td><td class="yes">✓</td><td class="yes">✓</td><td class="no">✗ (clé)</td><td class="no">✗</td></tr>
+    <tr><td>Hashable</td><td class="no">✗</td><td class="yes">✓</td><td class="no">✗</td><td class="no">✗</td></tr>
+    <tr><td>Test d'appartenance</td><td>O(n)</td><td>O(n)</td><td>O(1)</td><td>O(1)</td></tr>
+    <tr><td>Usage typique data</td><td>séries, colonnes</td><td>coords, config</td><td>records, JSON</td><td>dédoublonnage</td></tr>
+  </table>
+</section>
+
+<!-- EXERCICES -->
+<section class="chapter" id="exercices" style="--cc:var(--accent2);--cbg:rgba(242,92,122,.1)">
+  <div class="chapter-header">
+    <span class="chapter-num">06 —</span>
+    <span class="chapter-badge">Exercices</span>
+  </div>
+  <h2>Exercices Pratiques</h2>
+  <p>Des exercices progressifs orientés data analyst. Essayez de résoudre avant de voir la solution.</p>
+
+  <div class="exercise">
+    <div class="exercise-label">Exercice 1 — Liste</div>
+    <h4>Nettoyage de notes</h4>
+    <p>Vous avez une liste de notes : <code>[12, 18, -5, 9, 20, 25, 14, 0]</code>. Filtrez les notes valides (entre 0 et 20), calculez la moyenne, le min et le max.</p>
+    <details>
+      <summary>▶ Voir la solution</summary>
+      <pre><span class="var">notes_brutes</span> = [<span class="num">12</span>, <span class="num">18</span>, -<span class="num">5</span>, <span class="num">9</span>, <span class="num">20</span>, <span class="num">25</span>, <span class="num">14</span>, <span class="num">0</span>]
+
+<span class="cm"># Filtrage</span>
+<span class="var">notes</span>   = [n <span class="kw">for</span> n <span class="kw">in</span> notes_brutes <span class="kw">if</span> <span class="num">0</span> <= n <= <span class="num">20</span>]
+<span class="cm"># [12, 18, 9, 20, 14, 0]</span>
+
+<span class="cm"># Statistiques</span>
+<span class="var">moyenne</span> = <span class="fn">sum</span>(notes) / <span class="fn">len</span>(notes)   <span class="cm"># 12.17</span>
+<span class="var">minimum</span> = <span class="fn">min</span>(notes)                 <span class="cm"># 0</span>
+<span class="var">maximum</span> = <span class="fn">max</span>(notes)                 <span class="cm"># 20</span>
+
+<span class="fn">print</span>(f<span class="st">"Notes valides : {notes}"</span>)
+<span class="fn">print</span>(f<span class="st">"Moyenne : {moyenne:.2f} | Min : {minimum} | Max : {maximum}"</span>)</pre>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-label">Exercice 2 — Dictionnaire</div>
+    <h4>Inventaire produits</h4>
+    <p>Créez un inventaire de produits avec nom, prix et stock. Affichez les produits en rupture (stock = 0), et calculez la valeur totale du stock (prix × quantité).</p>
+    <details>
+      <summary>▶ Voir la solution</summary>
+      <pre><span class="var">inventaire</span> = [
+    {<span class="st">"nom"</span>: <span class="st">"Clavier"</span>,  <span class="st">"prix"</span>: <span class="num">79.99</span>,  <span class="st">"stock"</span>: <span class="num">15</span>},
+    {<span class="st">"nom"</span>: <span class="st">"Souris"</span>,   <span class="st">"prix"</span>: <span class="num">29.99</span>,  <span class="st">"stock"</span>: <span class="num">0</span>},
+    {<span class="st">"nom"</span>: <span class="st">"Écran"</span>,    <span class="st">"prix"</span>: <span class="num">249.00</span>, <span class="st">"stock"</span>: <span class="num">8</span>},
+    {<span class="st">"nom"</span>: <span class="st">"Webcam"</span>,   <span class="st">"prix"</span>: <span class="num">59.00</span>,  <span class="st">"stock"</span>: <span class="num">0</span>},
+]
+
+<span class="cm"># Produits en rupture</span>
+<span class="var">rupture</span> = [p[<span class="st">"nom"</span>] <span class="kw">for</span> p <span class="kw">in</span> inventaire <span class="kw">if</span> p[<span class="st">"stock"</span>] <span class="op">==</span> <span class="num">0</span>]
+<span class="fn">print</span>(f<span class="st">"Rupture : {rupture}"</span>)        <span class="cm"># ["Souris","Webcam"]</span>
+
+<span class="cm"># Valeur totale</span>
+<span class="var">valeur</span>  = <span class="fn">sum</span>(p[<span class="st">"prix"</span>] * p[<span class="st">"stock"</span>] <span class="kw">for</span> p <span class="kw">in</span> inventaire)
+<span class="fn">print</span>(f<span class="st">"Valeur totale : {valeur:.2f} €"</span>)  <span class="cm"># 3191.85 €</span></pre>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-label">Exercice 3 — Set</div>
+    <h4>Analyse d'audience</h4>
+    <p>Vous avez les visiteurs de votre site sur 3 jours. Trouvez : les visiteurs fidèles (tous les jours), les visiteurs uniques totaux, et ceux qui sont venus uniquement le premier jour.</p>
+    <details>
+      <summary>▶ Voir la solution</summary>
+      <pre><span class="var">jour1</span> = {<span class="st">"Alice"</span>, <span class="st">"Bob"</span>,   <span class="st">"Clara"</span>, <span class="st">"David"</span>}
+<span class="var">jour2</span> = {<span class="st">"Bob"</span>,   <span class="st">"Clara"</span>, <span class="st">"Emma"</span>,  <span class="st">"Frank"</span>}
+<span class="var">jour3</span> = {<span class="st">"Clara"</span>, <span class="st">"Bob"</span>,   <span class="st">"Grace"</span>, <span class="st">"Alice"</span>}
+
+<span class="var">fideles</span>       = jour1 & jour2 & jour3   <span class="cm"># {"Bob","Clara"}</span>
+<span class="var">tous</span>          = jour1 | jour2 | jour3   <span class="cm"># 7 visiteurs</span>
+<span class="var">j1_seulement</span>  = jour1 - jour2 - jour3   <span class="cm"># {"David"}</span>
+
+<span class="fn">print</span>(f<span class="st">"Fidèles 3 jours : {fideles}"</span>)
+<span class="fn">print</span>(f<span class="st">"Visiteurs uniques : {len(tous)}"</span>)
+<span class="fn">print</span>(f<span class="st">"Uniquement J1    : {j1_seulement}"</span>)</pre>
+    </details>
+  </div>
+
+  <div class="exercise">
+    <div class="exercise-label">Exercice 4 — Combinaison</div>
+    <h4>Analyse de ventes par catégorie</h4>
+    <p>À partir d'une liste de transactions, calculez le chiffre d'affaires total par catégorie et identifiez la catégorie la plus rentable.</p>
+    <details>
+      <summary>▶ Voir la solution</summary>
+      <pre><span class="var">transactions</span> = [
+    {<span class="st">"produit"</span>: <span class="st">"Laptop"</span>,  <span class="st">"cat"</span>: <span class="st">"Informatique"</span>, <span class="st">"montant"</span>: <span class="num">1200</span>},
+    {<span class="st">"produit"</span>: <span class="st">"Chaise"</span>,  <span class="st">"cat"</span>: <span class="st">"Mobilier"</span>,     <span class="st">"montant"</span>: <span class="num">250</span>},
+    {<span class="st">"produit"</span>: <span class="st">"Clavier"</span>, <span class="st">"cat"</span>: <span class="st">"Informatique"</span>, <span class="st">"montant"</span>: <span class="num">80</span>},
+    {<span class="st">"produit"</span>: <span class="st">"Bureau"</span>,  <span class="st">"cat"</span>: <span class="st">"Mobilier"</span>,     <span class="st">"montant"</span>: <span class="num">450</span>},
+    {<span class="st">"produit"</span>: <span class="st">"Écran"</span>,   <span class="st">"cat"</span>: <span class="st">"Informatique"</span>, <span class="st">"montant"</span>: <span class="num">350</span>},
+]
+
+<span class="cm"># Agrégation par catégorie</span>
+<span class="var">ca_par_cat</span> = {}
+<span class="kw">for</span> t <span class="kw">in</span> transactions:
+    cat = t[<span class="st">"cat"</span>]
+    ca_par_cat[cat] = ca_par_cat.get(cat, <span class="num">0</span>) + t[<span class="st">"montant"</span>]
+<span class="cm"># {"Informatique":1630, "Mobilier":700}</span>
+
+<span class="cm"># Catégorie la plus rentable</span>
+<span class="var">best</span> = <span class="fn">max</span>(ca_par_cat, key=<span class="kw">lambda</span> k: ca_par_cat[k])
+<span class="fn">print</span>(f<span class="st">"CA par catégorie : {ca_par_cat}"</span>)
+<span class="fn">print</span>(f<span class="st">"Meilleure catégorie : {best} ({ca_par_cat[best]} €)"</span>)</pre>
+    </details>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-label">Prochaines étapes</div>
+  <p style="font-size:13px">Vous maîtrisez les collections Python. La prochaine étape naturelle pour le data analyst :</p>
+  <div class="next-steps">
+    <div class="next-card">
+      <div class="title">pandas</div>
+      <div class="sub">DataFrame, Series — construit sur ces collections</div>
+    </div>
+    <div class="next-card">
+      <div class="title">numpy</div>
+      <div class="sub">Arrays numériques haute performance</div>
+    </div>
+    <div class="next-card">
+      <div class="title">json</div>
+      <div class="sub">Sérialiser/désérialiser des dicts Python</div>
+    </div>
+    <div class="next-card">
+      <div class="title">itertools</div>
+      <div class="sub">Combinaisons, permutations, chaînes</div>
+    </div>
+  </div>
+  <p style="font-size:11px;color:var(--muted);margin-top:2rem">Cours Python Collections — Data Analyst · Claude</p>
+</footer>
+
+<script>
+const progress = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const doc = document.documentElement;
+  const top = doc.scrollTop || document.body.scrollTop;
+  const height = doc.scrollHeight - doc.clientHeight;
+  progress.style.width = (top / height * 100) + '%';
+});
+
+const sections = document.querySelectorAll('section[id], .chapter[id]');
+const navLinks = document.querySelectorAll('nav a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      navLinks.forEach(a => a.classList.remove('active'));
+      const active = document.querySelector(`nav a[href="#${e.target.id}"]`);
+      if(active) active.classList.add('active');
+    }
+  });
+}, {rootMargin: '-40% 0px -55% 0px'});
+sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
